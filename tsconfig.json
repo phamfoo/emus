@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES5",
+    "outDir": "lib",
+    "rootDir": "src",
+    "lib": ["es2017", "dom"],
+    "sourceMap": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*.ts", "src/*.ts"],
+  "exclude": ["node_modules", "lib"]
+}

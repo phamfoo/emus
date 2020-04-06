@@ -1,0 +1,33 @@
+{
+  "name": "emus",
+  "version": "0.0.0",
+  "description": "Start the Android Emulator or the iOS Simulator from the command line",
+  "main": "src/index.ts",
+  "author": {
+    "name": "Tien Pham",
+    "email": "tien@ph6m.com"
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "format": "prettier --write 'src/**/*' 'README.md'"
+  },
+  "bin": {
+    "emus": "./bin/emus.js"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^6.5.0",
+    "@types/node": "^13.11.0",
+    "eslint": "^6.8.0",
+    "eslint-config-tienph6m": "^0.2.0",
+    "prettier": "^2.0.3",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "execa": "^4.0.0",
+    "inquirer": "^7.1.0",
+    "meow": "^6.1.0"
+  }
+}
