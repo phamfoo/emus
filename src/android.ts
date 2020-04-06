@@ -7,7 +7,7 @@ import { CliConfig } from './types'
 import Conf from 'conf'
 
 const access = util.promisify(fs.access)
-const config = new Conf<CliConfig>()
+const config = new Conf<CliConfig>({ projectName: 'emus' })
 
 export async function getAVDs() {
   const emulatorPath = await getAndroidEmulatorPath()

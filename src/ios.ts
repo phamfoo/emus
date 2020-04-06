@@ -2,7 +2,7 @@ import os from 'os'
 import execa from 'execa'
 import Conf from 'conf'
 import { CliConfig } from './types'
-const config = new Conf<CliConfig>()
+const config = new Conf<CliConfig>({ projectName: 'emus' })
 
 export async function getIOSSimulatorList() {
   if (os.platform() !== 'darwin') {

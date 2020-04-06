@@ -5,7 +5,7 @@ import { prompt, Separator } from 'inquirer'
 import Conf from 'conf'
 import { DeviceOption, CliConfig } from './types'
 
-const config = new Conf<CliConfig>()
+const config = new Conf<CliConfig>({ projectName: 'emus' })
 
 const cli = meow(`
   Usage
