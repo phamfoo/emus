@@ -2,6 +2,10 @@ import meow from 'meow'
 import { getAVDs, startAVD } from './android'
 import { getIOSSimulatorList, startIOSSimulator } from './ios'
 import { prompt, Separator } from 'inquirer'
+import Conf from 'conf'
+import { DeviceOption, CliConfig } from './types'
+
+const config = new Conf<CliConfig>()
 
 const cli = meow(`
   Usage
@@ -16,14 +20,6 @@ const cli = meow(`
     $ emus -a
     $ emus -i
 `)
-
-interface DeviceOption {
-  name: string
-  value: {
-    id: string
-    type: 'android' | 'ios'
-  }
-}
 
 ;(async () => {
   const flags = cli.flags
@@ -96,6 +92,31 @@ interface DeviceOption {
 })()
 
 async function showOptions(options: DeviceOption[]) {
+  const lastOpenedById = config.get('lastOpenedById') || {}
+
+  options.sort(function (a, b) {
+    const aLastOpened = lastOpenedById[a.value.id] || ''
+    const bLastOpened = lastOpenedById[b.value.id] || ''
+
+    // Show the more recently opened devices first
+    if (aLastOpened > bLastOpened) {
+      return -1
+    }
+    if (bLastOpened > aLastOpened) {
+      return 1
+    }
+
+    // Show iOS simulator first
+    if (a.value.type === 'ios') {
+      return -1
+    }
+    if (b.value.type === 'ios') {
+      return 1
+    }
+
+    return 0
+  })
+
   const choices = [
     ...options,
     new Separator(),
@@ -113,7 +134,7 @@ async function showOptions(options: DeviceOption[]) {
 
   if (selectedOption) {
     if (selectedOption.option.type === 'ios') {
-      await startIOSSimulator()
+      await startIOSSimulator(selectedOption.option.id)
       process.exit(0)
     } else if (selectedOption.option.type === 'android') {
       await startAVD(selectedOption.option.id)

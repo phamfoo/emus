@@ -3,7 +3,11 @@ import os from 'os'
 import path from 'path'
 import util from 'util'
 import execa from 'execa'
+import { CliConfig } from './types'
+import Conf from 'conf'
+
 const access = util.promisify(fs.access)
+const config = new Conf<CliConfig>()
 
 export async function getAVDs() {
   const emulatorPath = await getAndroidEmulatorPath()
@@ -18,6 +22,10 @@ export async function getAVDs() {
 }
 
 export async function startAVD(avd: string) {
+  let lastOpenedById = config.get('lastOpenedById') || {}
+  lastOpenedById = { ...lastOpenedById, [avd]: new Date().toString() }
+  config.set('lastOpenedById', lastOpenedById)
+
   const emulatorPath = await getAndroidEmulatorPath()
   return execa(emulatorPath, ['-avd', avd], {
     stdio: 'ignore',
