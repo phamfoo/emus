@@ -12,10 +12,30 @@
     "dev": "tsc --watch",
     "build": "tsc",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "format": "prettier --write 'src/**/*' 'README.md'"
+    "format": "prettier --write 'src/**/*' 'README.md'",
+    "prepare": "yarn build"
+  },
+  "engines": {
+    "node": ">=10"
   },
   "bin": {
     "emus": "./bin/emus.js"
+  },
+  "keywords": [
+    "cli",
+    "avd",
+    "android",
+    "ios"
+  ],
+  "files": [
+    "lib",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tienph6m/emus"
   },
   "devDependencies": {
     "@types/execa": "^2.0.0",
