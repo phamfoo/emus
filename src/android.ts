@@ -27,7 +27,7 @@ export async function startAVD(avd: string) {
   config.set('lastOpenedById', lastOpenedById)
 
   const emulatorPath = await getAndroidEmulatorPath()
-  return execa(emulatorPath, ['-avd', avd], {
+  execa(emulatorPath, ['-avd', avd], {
     stdio: 'ignore',
     detached: true,
   }).unref()
