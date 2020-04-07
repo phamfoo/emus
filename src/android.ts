@@ -57,7 +57,7 @@ async function getAndroidSDKPath() {
   } else {
     // If $ANDROID_HOME and $ANDROID_SDK_ROOT haven't been set,
     // try to guess the path to the Android SDK
-    if (os.platform() === 'win32' || isWsl) {
+    if (process.platform === 'win32' || isWsl) {
       sdkPath = path.normalize(
         path.join(process.env.USERPROFILE, '/AppData/Local/Android/Sdk/')
       )

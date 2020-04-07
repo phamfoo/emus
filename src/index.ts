@@ -80,7 +80,7 @@ const cli = meow(`
       console.error(
         `
         ${androidError}
-        ${iOSError}
+        ${process.platform === 'darwin' && iOSError}
         `
       )
       process.exit(1)

@@ -1,11 +1,10 @@
-import os from 'os'
 import execa from 'execa'
 import Conf from 'conf'
 import { CliConfig } from './types'
 const config = new Conf<CliConfig>({ projectName: 'emus' })
 
 export async function getIOSSimulatorList() {
-  if (os.platform() !== 'darwin') {
+  if (process.platform !== 'darwin') {
     throw Error('The iOS Simulator is only available on macOS')
   }
   // TODO: Check if the iOS Simulator is installed
