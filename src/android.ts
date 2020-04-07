@@ -81,5 +81,21 @@ async function getAndroidSDKPath() {
 async function getAndroidEmulatorPath() {
   const sdkPath = await getAndroidSDKPath()
 
-  return path.normalize(path.join(sdkPath, '/emulator/emulator'))
+  try {
+    const emulatorPath = path.normalize(
+      path.join(sdkPath, '/emulator/emulator')
+    )
+    await access(emulatorPath)
+    return emulatorPath
+    // eslint-disable-next-line no-empty
+  } catch (error) {}
+
+  try {
+    const emulatorPath = path.normalize(path.join(sdkPath, '/tools/emulator'))
+    await access(emulatorPath)
+    return emulatorPath
+    // eslint-disable-next-line no-empty
+  } catch (error) {}
+
+  throw Error("Couldn't locate the Android Emulator.")
 }
