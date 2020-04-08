@@ -5,7 +5,6 @@ import util from 'util'
 import execa from 'execa'
 import { CliConfig } from './types'
 import Conf from 'conf'
-import isWsl from 'is-wsl'
 
 const access = util.promisify(fs.access)
 const config = new Conf<CliConfig>({ projectName: 'emus' })
@@ -34,30 +33,35 @@ export async function startAVD(avd: string) {
   }).unref()
 }
 
-async function getAndroidSDKPath() {
-  let sdkPath = null
-
+async function getAndroidEmulatorPath() {
   // If either $ANDROID_HOME or $ANDROID_SDK_ROOT has been set to the correct value, use it
   if (process.env.ANDROID_HOME) {
     try {
-      sdkPath = process.env.ANDROID_HOME
-      await access(sdkPath)
+      return await findEmulatorFromSdkPath(process.env.ANDROID_HOME)
     } catch (error) {
-      throw new Error(`The $ANDROID_HOME environment variable is not correct.`)
+      throw new Error(
+        `
+        Couldn't find the Android Emulator in: '${process.env.ANDROID_HOME}'
+        Make sure your $ANDROID_HOME environment variable is pointed to the correct SDK installation directory.
+        `
+      )
     }
   } else if (process.env.ANDROID_SDK_ROOT) {
     try {
-      sdkPath = process.env.ANDROID_SDK_ROOT
-      await access(sdkPath)
+      return await findEmulatorFromSdkPath(process.env.ANDROID_SDK_ROOT)
     } catch (error) {
       throw new Error(
-        `The $ANDROID_SDK_ROOT environment variable is not correct.`
+        `
+        Couldn't find the Android Emulator in: '${process.env.ANDROID_SDK_ROOT}'
+        Make sure your $ANDROID_SDK_ROOT environment variable is pointed to the correct SDK installation directory.
+        `
       )
     }
   } else {
     // If $ANDROID_HOME and $ANDROID_SDK_ROOT haven't been set,
     // try to guess the path to the Android SDK
-    if (process.platform === 'win32' || isWsl) {
+    let sdkPath = null
+    if (process.platform === 'win32') {
       sdkPath = path.normalize(
         path.join(process.env.USERPROFILE, '/AppData/Local/Android/Sdk/')
       )
@@ -67,35 +71,27 @@ async function getAndroidSDKPath() {
       )
     }
     try {
-      await access(sdkPath)
+      return await findEmulatorFromSdkPath(sdkPath)
     } catch (error) {
       throw new Error(
-        `Couldn't locate the Android SDK, please set the $ANDROID_HOME or $ANDROID_SDK_ROOT environment variable.`
+        'Unable to locate the Android SDK, please set the $ANDROID_HOME or $ANDROID_SDK_ROOT environment variable.'
       )
     }
   }
-
-  return sdkPath
 }
 
-async function getAndroidEmulatorPath() {
-  const sdkPath = await getAndroidSDKPath()
+async function findEmulatorFromSdkPath(sdkPath: string) {
+  const emulatorPaths = ['/emulator/emulator', '/tools/emulator']
 
-  try {
-    const emulatorPath = path.normalize(
-      path.join(sdkPath, '/emulator/emulator')
-    )
-    await access(emulatorPath)
-    return emulatorPath
-    // eslint-disable-next-line no-empty
-  } catch (error) {}
+  for (let i = 0; i < emulatorPaths.length; i++) {
+    const emulatorPath = emulatorPaths[i]
+    try {
+      const emulatorFullPath = path.normalize(path.join(sdkPath, emulatorPath))
+      await access(emulatorFullPath)
+      return emulatorFullPath
+      // eslint-disable-next-line no-empty
+    } catch (error) {}
+  }
 
-  try {
-    const emulatorPath = path.normalize(path.join(sdkPath, '/tools/emulator'))
-    await access(emulatorPath)
-    return emulatorPath
-    // eslint-disable-next-line no-empty
-  } catch (error) {}
-
-  throw Error("Couldn't locate the Android Emulator.")
+  throw new Error("Couldn't to find the Android Emulator in ${sdkPath}")
 }
