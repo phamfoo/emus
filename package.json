@@ -1,6 +1,6 @@
 {
   "name": "emus",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Start the Android Emulator or the iOS Simulator from the command line",
   "main": "src/index.ts",
   "author": {
