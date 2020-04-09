@@ -1,7 +1,7 @@
 {
   "name": "emus",
   "version": "0.6.0",
-  "description": "Start the Android Emulator or the iOS Simulator from the command line",
+  "description": "Start the Android Emulator and the iOS Simulator from the command line",
   "main": "src/index.ts",
   "author": {
     "name": "Tien Pham",
