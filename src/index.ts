@@ -1,4 +1,4 @@
-import meow from 'meow'
+import meow, { AnyFlags } from 'meow'
 import { getAVDs, startAVD } from './android'
 import { getIOSSimulatorList, startIOSSimulator } from './ios'
 import { prompt, Separator } from 'inquirer'
@@ -7,7 +7,8 @@ import { DeviceOption, CliConfig } from './types'
 
 const config = new Conf<CliConfig>({ projectName: 'emus' })
 
-const cli = meow(`
+const cli = meow(
+  `
   Usage
     $ emus [options]
 
@@ -19,10 +20,34 @@ const cli = meow(`
     $ emus
     $ emus -a
     $ emus -i
-`)
+`,
+  {
+    flags: {
+      help: {
+        type: 'boolean',
+        alias: 'h',
+        default: false,
+      },
+      android: {
+        type: 'boolean',
+        alias: 'a',
+        default: false,
+      },
+      ios: {
+        type: 'boolean',
+        alias: 'i',
+        default: false,
+      },
+    },
+  }
+)
 
 ;(async () => {
   const flags = cli.flags
+  if (flags.help) {
+    cli.showHelp()
+    process.exit(0)
+  }
 
   let androidError = null
   let avds = []
@@ -61,14 +86,14 @@ const cli = meow(`
     })
   )
 
-  if (flags.a || flags.android) {
+  if (flags.android) {
     if (avdOptions.length === 0) {
       console.error(androidError)
       process.exit(1)
     }
 
     showOptions(avdOptions)
-  } else if (flags.i || flags.ios) {
+  } else if (flags.ios) {
     if (iOSSimulatorOptions.length === 0) {
       console.error(iOSError)
       process.exit(1)
