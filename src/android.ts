@@ -87,7 +87,7 @@ async function findEmulatorFromSdkPath(sdkPath: string) {
     )
     await access(emulatorPath)
     return emulatorPath
-  } catch (error) {}
-
-  throw new Error("Couldn't to find the Android Emulator in ${sdkPath}")
+  } catch (error) {
+    throw new Error(`Couldn't to find the Android Emulator in ${sdkPath}`)
+  }
 }
