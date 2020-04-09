@@ -3,10 +3,10 @@
     "alwaysStrict": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "ES5",
+    "target": "ES2018",
     "outDir": "lib",
     "rootDir": "src",
-    "lib": ["es2017", "dom"],
+    "lib": ["ES2018", "dom"],
     "sourceMap": true,
     "esModuleInterop": true
   },
