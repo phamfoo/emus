@@ -81,17 +81,13 @@ async function getAndroidEmulatorPath() {
 }
 
 async function findEmulatorFromSdkPath(sdkPath: string) {
-  const emulatorPaths = ['/emulator/emulator', '/tools/emulator']
-
-  for (let i = 0; i < emulatorPaths.length; i++) {
-    const emulatorPath = emulatorPaths[i]
-    try {
-      const emulatorFullPath = path.normalize(path.join(sdkPath, emulatorPath))
-      await access(emulatorFullPath)
-      return emulatorFullPath
-      // eslint-disable-next-line no-empty
-    } catch (error) {}
-  }
+  try {
+    const emulatorPath = path.normalize(
+      path.join(sdkPath, '/emulator/emulator')
+    )
+    await access(emulatorPath)
+    return emulatorPath
+  } catch (error) {}
 
   throw new Error("Couldn't to find the Android Emulator in ${sdkPath}")
 }
