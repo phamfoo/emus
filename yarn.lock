@@ -550,10 +550,10 @@ eslint-config-prettier@^6.10.1:
   dependencies:
     get-stdin "^6.0.0"
 
-eslint-config-tienph6m@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-tienph6m/-/eslint-config-tienph6m-0.3.0.tgz#51bdda7343e6bc951a957e15a27c402f31fe97ca"
-  integrity sha512-y+hwUlz+SZttQWgJt253NnYc+duCo8IwYvRysM8OcHFEDD7hKGmMvL9g0899QuDU0QWtr+IKa6KyapdvLK3T2Q==
+eslint-config-tienph6m@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/eslint-config-tienph6m/-/eslint-config-tienph6m-0.3.1.tgz#d8dd872af206864d92b72e05dd7b78d6ccff4e93"
+  integrity sha512-7G3NTWV03CGHgxHkemm44oeP34g0ntrCqvejU1gxPR9bG47QIaAkn/Fg2qsEPa2iVSVa5w0cp2t40fMWLq82jQ==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^2.26.0"
     "@typescript-eslint/parser" "^2.26.0"

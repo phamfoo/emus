@@ -42,7 +42,7 @@
     "@types/inquirer": "^6.5.0",
     "@types/node": "^13.11.0",
     "eslint": "^6.8.0",
-    "eslint-config-tienph6m": "^0.3.0",
+    "eslint-config-tienph6m": "^0.3.1",
     "prettier": "^2.0.3",
     "typescript": "^3.8.3"
   },
