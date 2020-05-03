@@ -1,4 +1,4 @@
-import meow, { AnyFlags } from 'meow'
+import meow from 'meow'
 import { getAVDs, startAVD } from './android'
 import { getIOSSimulatorList, startIOSSimulator } from './ios'
 import { prompt, Separator } from 'inquirer'
@@ -13,13 +13,15 @@ const cli = meow(
     $ emus [options]
 
   Options
-    -a, --android             Start the Android Emulator
-    -i, --ios                 Start the iOS Simulator
+    -a, --android                    Start the Android Emulator
+    -i, --ios                        Start the iOS Simulator
+    -s, --show-startup-options       Show the startup options from the Android Emulator
 
   Examples
     $ emus
     $ emus -a
     $ emus -i
+    $ emus -as
 `,
   {
     flags: {
@@ -36,6 +38,11 @@ const cli = meow(
       ios: {
         type: 'boolean',
         alias: 'i',
+        default: false,
+      },
+      showStartupOptions: {
+        type: 'boolean',
+        alias: 's',
         default: false,
       },
     },
@@ -92,14 +99,14 @@ const cli = meow(
       process.exit(1)
     }
 
-    showOptions(avdOptions)
+    showDevices(avdOptions, flags.showStartupOptions)
   } else if (flags.ios) {
     if (iOSSimulatorOptions.length === 0) {
       console.error(iOSError)
       process.exit(1)
     }
 
-    showOptions(iOSSimulatorOptions)
+    showDevices(iOSSimulatorOptions, flags.showStartupOptions)
   } else {
     if (avds.length === 0 && iOSSimulators.length === 0) {
       console.error(
@@ -112,11 +119,14 @@ const cli = meow(
     }
 
     const options = [...iOSSimulatorOptions, ...avdOptions]
-    showOptions(options)
+    showDevices(options, flags.showStartupOptions)
   }
 })()
 
-async function showOptions(options: DeviceOption[]) {
+async function showDevices(
+  options: DeviceOption[],
+  shouldShowStartupOptions: boolean = false
+) {
   const lastOpenedById = config.get('lastOpenedById') || {}
 
   options.sort(function (a, b) {
@@ -160,12 +170,71 @@ async function showOptions(options: DeviceOption[]) {
   if (selectedOption) {
     if (selectedOption.option.type === 'ios') {
       await startIOSSimulator(selectedOption.option.id)
-      process.exit(0)
     } else if (selectedOption.option.type === 'android') {
-      await startAVD(selectedOption.option.id)
-      process.exit(0)
-    } else if (selectedOption.option.type === 'exit') {
-      process.exit(0)
+      if (shouldShowStartupOptions) {
+        showStatupOptions(selectedOption.option.id)
+      } else {
+        await startAVD(selectedOption.option.id)
+      }
     }
+  }
+}
+
+async function showStatupOptions(avdName: string) {
+  const options = [
+    {
+      name: 'Start',
+      value: {
+        type: 'start',
+        flags: [],
+      },
+    },
+    {
+      name: 'Wipe Data',
+      value: {
+        type: 'start',
+        flags: ['-wipe-data'],
+      },
+    },
+    {
+      name: 'No Snapshot',
+      value: {
+        type: 'start',
+        flags: ['-no-snapshot'],
+      },
+    },
+    {
+      name: 'No Snapshot Load',
+      value: {
+        type: 'start',
+        flags: ['-no-snapshot-load'],
+      },
+    },
+    {
+      name: 'No Snapshot Save',
+      value: {
+        type: 'start',
+        flags: ['-no-snapshot-save'],
+      },
+    },
+  ]
+
+  const choices = [
+    ...options,
+    new Separator(),
+    { name: 'Exit', value: { type: 'exit' } },
+  ]
+
+  const selectedOption = await prompt([
+    {
+      type: 'list',
+      name: 'option',
+      message: 'Select startup option:',
+      choices: choices,
+    },
+  ])
+
+  if (selectedOption.option.type === 'start') {
+    await startAVD(avdName, selectedOption.option.flags)
   }
 }

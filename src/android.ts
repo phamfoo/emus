@@ -21,13 +21,13 @@ export async function getAVDs() {
   return avdList
 }
 
-export async function startAVD(avd: string) {
+export async function startAVD(avd: string, flags: string[] = []) {
   let lastOpenedById = config.get('lastOpenedById') || {}
   lastOpenedById = { ...lastOpenedById, [avd]: new Date().toString() }
   config.set('lastOpenedById', lastOpenedById)
 
   const emulatorPath = await getAndroidEmulatorPath()
-  execa(emulatorPath, ['-avd', avd], {
+  execa(emulatorPath, ['-avd', avd, ...flags], {
     stdio: 'ignore',
     detached: true,
   }).unref()
