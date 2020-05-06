@@ -30,11 +30,13 @@ $ emus --help
     $ emus [options]
 
   Options
-    -a, --android             Start the Android Emulator
-    -i, --ios                 Start the iOS Simulator
+    -a, --android                    Start the Android Emulator
+    -i, --ios                        Start the iOS Simulator
+    -s, --show-startup-options       Show the startup options from the Android Emulator
 
   Examples
     $ emus
     $ emus -a
     $ emus -i
+    $ emus -as
 ```
